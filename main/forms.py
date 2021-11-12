@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
+from django.db.models import fields
 
 from .apps import user_registered
 
-from .models import AdvUser
+from .models import AdvUser, Exercise, Workout
 
 
 class ChangeUserInfoForm(forms.ModelForm):
@@ -60,3 +61,18 @@ class RegisterUserForm(forms.ModelForm):
         model = AdvUser
         fields = ('username', 'email', 'password1', 'password2', 'first_name',
                   'last_name', 'send_messages')
+
+
+class WorkoutForm(forms.ModelForm):
+
+    class Meta:
+        model = Workout
+        fields = '__all__'
+
+class ExerciseForm(forms.ModelForm):
+   
+   class Meta:
+        model = Exercise
+        exclude = {'set_description'}
+
+

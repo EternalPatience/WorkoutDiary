@@ -2,7 +2,9 @@ from django.contrib import admin
 
 import datetime
 
-from .models import AdvUser 
+
+from .forms import ExerciseForm, WorkoutForm
+from .models import AdvUser, Exercise, SetDescription, Workout 
 from .utilities import send_activation_notification
 
 
@@ -53,6 +55,29 @@ class AdvUserAdmin(admin.ModelAdmin):
     readonly_fields = ('last_login', 'date_joined')
     actions = (send_activation_notifications, )
 
+class ExerciseInline(admin.TabularInline):
+    exclude = ['set_description']
+    model = Exercise
 
+
+class WorkoutsAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'created_at')
+    inlines = (ExerciseInline, )
+
+
+class SetDescriptionInline(admin.TabularInline):
+    model = SetDescription
+
+
+class ExerciseAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'workout')
+    inlines = (SetDescriptionInline,)
+
+
+
+admin.site.register(AdvUser, AdvUserAdmin)
+admin.site.register(Workout, WorkoutsAdmin)
+admin.site.register(Exercise, ExerciseAdmin)
+admin.site.register(SetDescription)
 
 
