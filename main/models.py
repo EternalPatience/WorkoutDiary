@@ -11,12 +11,21 @@ class AdvUser(AbstractUser):
     send_messages = models.BooleanField(
         default=True, verbose_name='Слать оповещения о новых комментариях?')
 
+
+    def delete(self, *args, **kwargs):
+        for workout in self.workout_set.all():
+            workout.delete()
+        super().delete(*args, **kwargs)
+
+
     class Meta(AbstractUser.Meta):
         pass
 
 
 class Workout(models.Model):
     """"Workout description"""
+    sportsman_name = models.CharField(max_length=50, verbose_name='Имя спортсмена')
+    
     name = models.CharField(max_length=150, verbose_name='Название')
     created_at = models.DateTimeField(auto_now=False,
                                       verbose_name='Дата тренировки',

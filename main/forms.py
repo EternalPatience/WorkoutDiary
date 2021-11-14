@@ -63,16 +63,21 @@ class RegisterUserForm(forms.ModelForm):
                   'last_name', 'send_messages')
 
 
+# Probably need to be changed
 class WorkoutForm(forms.ModelForm):
-
     class Meta:
         model = Workout
         fields = '__all__'
 
+
 class ExerciseForm(forms.ModelForm):
-   
-   class Meta:
+    class Meta:
         model = Exercise
         exclude = {'set_description'}
 
 
+class SearchForm(forms.Form):
+    keyword = forms.CharField(required=False,
+                              max_length=20,
+                              label='',
+                              help_text='Будьте внимательны, регистр важен')

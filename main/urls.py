@@ -1,12 +1,15 @@
 from django.contrib.auth.views import LogoutView
+from django.forms.formsets import all_valid
 from django.urls import path
 from django.views.generic.edit import DeleteView
 
-from .views import DeleteUserView, UserLogoutView, index, about, UserLoginView, profile, ChangeUserInfoView, UserPasswordChangeView, RegisterUserView, RegisterDoneView, user_activate
+from .views import DeleteUserView, UserLogoutView, all_workouts, index, about, UserLoginView, profile, ChangeUserInfoView, UserPasswordChangeView, RegisterUserView, RegisterDoneView, user_activate, workout
 
 
 app_name = 'main'
 urlpatterns = [
+    path('workouts/<int:pk>/', workout, name='workout'),
+    path('workouts/', all_workouts, name='workouts'),
     path('accounts/profile/delete/', DeleteUserView.as_view(), name='profile_delete'),
     path('account/register/activate/<str:sign>/', user_activate, name='register_activate'),
     path('accounts/register/done/', RegisterDoneView.as_view(), name='register_done'),

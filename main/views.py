@@ -8,14 +8,16 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.signing import BadSignature
+from django.core.paginator import Paginator
 
-from .models import AdvUser
-from .forms import ChangeUserInfoForm, RegisterUserForm
+from .models import AdvUser, Exercise, Workout
+from .forms import SearchForm, ChangeUserInfoForm, RegisterUserForm
 from .utilities import signer
 
 
@@ -116,3 +118,34 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
         if not queryset:
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
+
+
+def all_workouts(request):
+    workouts = Workout.objects.filter(sportsman_name=request.user.pk )
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        q = Q(name__icontains=keyword) | Q(comment__icontains=keyword)
+        workouts = workouts.filter(q)
+    else:
+        keyword = ''
+    form = SearchForm(initial={'keyword': keyword})
+    paginator = Paginator(workouts, 2)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {
+            'workouts': workouts, 
+            'page': page, 
+            'form': form
+
+    }
+
+    return render(request, 'main/workouts.html', context)
+
+def workout(request, pk):
+    workout = get_object_or_404(Workout, pk=pk)
+    exercises = workout.exercise_set.all()
+    context = {'workout': workout, 'exercises': exercises}
+    return render(request, 'main/workout_detail.html', context)

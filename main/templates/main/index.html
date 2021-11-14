@@ -2,6 +2,16 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<h2>Дневник тренировок</h2>
+<h2>Последние 10 Ваших тренировок</h2>
+{% for workout in workouts %}
+    <li class="media my-5 p-3 border">
+        <div class="media-body">
+            <h3><a href="#"> <!---ссылка на саму тренировку с упражнениями-->
+            {{ workout.name }}</a></h3>
+            <div>{{ workout.comment }}</div>
+            <p class="text-right font-italic">{{ workout.created_at }}</p>
+        </div>
+    </li>    
+{% endfor %}
 {% endblock content %}
 

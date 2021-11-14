@@ -1,0 +1,36 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}Все тренировки{% endblock title %}
+
+{% block content %}
+<div class='container-fluid mb-2'>
+    <div class="row">
+        <div class='col'>&nbsp;</div>
+        <form class='col-md-auto form-inline'>
+            {% bootstrap_button content='Искать' button_type='submit' %}
+            {% bootstrap_form form show_label=False %}
+        </form>
+    </div>
+</div>
+<h2>Мои тренировки:</h2>
+{% if workouts %}
+    {% for workout in workouts %}
+    <ul class='list-unstyled'>
+        <li class="media my-5 p-3 border">
+            <div class="media-body">
+                <h3><a href="{% url 'main:workout' pk=workout.pk %}"> <!---ссылка на саму тренировку с упражнениями-->
+                {{ workout.name }}</a></h3>
+                <div>{{ workout.comment }}</div>
+                <p class="text-right font-italic">{{ workout.created_at }}</p>
+            </div>
+        </li> 
+    </ul>
+    {% endfor %}
+{% else %}       
+<p>Вы еще не добавили тренировки</p>
+{% endif %}
+{% bootstrap_pagination page url=keyword %}
+{% endblock content %}
+
