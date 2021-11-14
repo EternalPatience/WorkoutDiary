@@ -1,3 +1,4 @@
+from typing import Set
 from django import template
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -16,7 +17,7 @@ from django.urls import reverse_lazy
 from django.core.signing import BadSignature
 from django.core.paginator import Paginator
 
-from .models import AdvUser, Exercise, Workout
+from .models import AdvUser, Exercise, SetDescription, Workout
 from .forms import SearchForm, ChangeUserInfoForm, RegisterUserForm
 from .utilities import signer
 
@@ -42,6 +43,8 @@ class UserLoginView(LoginView):
 
 @login_required
 def profile(request):
+    workouts = Workout.objects.filter(sporsman_name=request.user.pk)
+    context = {'workouts': workouts}
     return render(request, 'main/profile.html')
 
 
@@ -100,6 +103,7 @@ def user_activate(request, sign):
         user.save()
     return render(request, template)
 
+
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = AdvUser
     template_name = 'main/delete_user.html'
@@ -121,7 +125,7 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
 
 
 def all_workouts(request):
-    workouts = Workout.objects.filter(sportsman_name=request.user.pk )
+    workouts = Workout.objects.filter(sportsman_name=request.user.pk)
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         q = Q(name__icontains=keyword) | Q(comment__icontains=keyword)
@@ -135,17 +139,14 @@ def all_workouts(request):
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {
-            'workouts': workouts, 
-            'page': page, 
-            'form': form
-
-    }
-
+    context = {'workouts': workouts, 'page': page, 'form': form}
     return render(request, 'main/workouts.html', context)
+
 
 def workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
-    exercises = workout.exercise_set.all()
-    context = {'workout': workout, 'exercises': exercises}
+    exercises = Exercise.objects.filter(workout=workout)
+    sets = SetDescription.objects.filter(exercise__in=exercises)
+    context = {'workout': workout, 'exercises': exercises, 'sets': sets}
     return render(request, 'main/workout_detail.html', context)
+

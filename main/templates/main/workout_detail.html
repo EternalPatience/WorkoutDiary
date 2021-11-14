@@ -20,10 +20,18 @@
             <p class="text-right font-italic"></p>
             <p class="text-right mt-2">
             <a href="#">Исправить</a>
-            <a href="#">Удалить</a>
-            </p>
+            <a href="#">Удалить</a></p>
+            <div class='table'>
+                <nav class="col-md-auto nav flex-column border">
+                    {% for set in exercise.setdescription_set.all %}
+                        {{ set.number }}
+                        {{ set.weight }}
+                        {{ set.repeats }}
+                    {% endfor %}
+                </nav>
+            </div>
         </div>
-    </li>
+    </li>   
     {% endfor %}
 </ul>
 <p><a href="#">Изменить тренировку</a></p>

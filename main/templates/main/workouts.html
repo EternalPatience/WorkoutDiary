@@ -20,7 +20,7 @@
     <ul class='list-unstyled'>
         <li class="media my-5 p-3 border">
             <div class="media-body">
-                <h3><a href="{% url 'main:workout' pk=workout.pk %}"> <!---ссылка на саму тренировку с упражнениями-->
+                <h3><a href="{% url 'main:workout' pk=workout.pk %}">
                 {{ workout.name }}</a></h3>
                 <div>{{ workout.comment }}</div>
                 <p class="text-right font-italic">{{ workout.created_at }}</p>
