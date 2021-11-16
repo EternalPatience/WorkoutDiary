@@ -48,7 +48,7 @@
             <nav class="col-md-auto nav flex-column border">
                 <a class="nav-link root"
                 href="{% url 'main:index' %}">Главная</a>
-                <a class="nav-link root" href="#">Добавить тренировку</a>
+                <a class="nav-link root" href="{% url 'main:workout_add' %}">Добавить тренировку</a>
                 <a class="nav-link root" href="{% url 'main:workouts' %}">Все тренировки</a>
                 <a class="nav-link root" href="{% url 'main:about' page='about' %}">О сайте</a>
             </nav> 

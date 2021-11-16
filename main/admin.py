@@ -3,7 +3,6 @@ from django.contrib import admin
 import datetime
 
 
-from .forms import ExerciseForm, WorkoutForm
 from .models import AdvUser, Exercise, SetDescription, Workout 
 from .utilities import send_activation_notification
 

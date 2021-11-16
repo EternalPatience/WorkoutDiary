@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.db.models import fields
+from django.forms.models import ModelForm, inlineformset_factory
 
 from .apps import user_registered
 
@@ -64,16 +65,14 @@ class RegisterUserForm(forms.ModelForm):
 
 
 # Probably need to be changed
-class WorkoutForm(forms.ModelForm):
+
+class WorkoutForm(ModelForm):
     class Meta:
         model = Workout
-        fields = '__all__'
+        exclude = ('sportsman_name',)
 
 
-class ExerciseForm(forms.ModelForm):
-    class Meta:
-        model = Exercise
-        exclude = {'set_description'}
+ExerciseFormSet = inlineformset_factory(Workout, Exercise, extra=6, can_delete=True, exclude=('sportsman_name',))
 
 
 class SearchForm(forms.Form):

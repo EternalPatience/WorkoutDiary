@@ -34,7 +34,6 @@
     </li>   
     {% endfor %}
 </ul>
-<p><a href="#">Изменить тренировку</a></p>
 {% endif %}
-
+<p><a href="{% url 'main:workout_delete' pk=workout.pk %}">Удалить тренировку</a></p>
 {% endblock content %}

@@ -46,9 +46,10 @@ class Workout(models.Model):
 class Exercise(models.Model):
     """Exercise model that is connected to workout model"""
     workout = models.ForeignKey(Workout,
-                                on_delete=models.PROTECT,
-                                verbose_name="Тренировка")
-    name = models.CharField(max_length=150, verbose_name='Название')
+                                on_delete=models.CASCADE,
+                                verbose_name="Тренировка",
+                                )
+    name = models.CharField(max_length=150, verbose_name='Упражнение')
 
     class Meta:
         verbose_name = "Упражнение"
@@ -59,7 +60,7 @@ class Exercise(models.Model):
 
 
 class SetDescription(models.Model):
-    exercise = models.ForeignKey(Exercise, on_delete=models.PROTECT, verbose_name="Упражнение")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name="Упражнение")
     number = models.PositiveSmallIntegerField(verbose_name='№ подхода')
     weight = models.FloatField(verbose_name='Вес')
     repeats = models.PositiveSmallIntegerField(default=0,
