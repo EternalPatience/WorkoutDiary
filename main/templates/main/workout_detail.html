@@ -19,7 +19,7 @@
             <p class="text-right font-weight-bold"></p>
             <p class="text-right font-italic"></p>
             <p class="text-right mt-2">
-            <a href="#">Исправить</a>
+            <a href="{% url 'main:set_add' workout_pk=workout.pk exercise_id=exercise.id %}">Добавить/изменить подходы</a>
             <a href="#">Удалить</a></p>
             <div class='table'>
                 <nav class="col-md-auto nav flex-column border">
@@ -35,5 +35,5 @@
     {% endfor %}
 </ul>
 {% endif %}
-<p><a href="{% url 'main:workout_delete' pk=workout.pk %}">Удалить тренировку</a></p>
+<p><a href="{% url 'main:workout_delete' workout_pk=workout.pk %}">Удалить тренировку</a></p>
 {% endblock content %}

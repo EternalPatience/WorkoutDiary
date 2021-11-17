@@ -1,4 +1,6 @@
+from django import template
 from django.forms.models import inlineformset_factory
+from django import forms
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template import TemplateDoesNotExist
@@ -8,7 +10,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, fields
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, DeleteView, FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
@@ -16,10 +18,13 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.signing import BadSignature
 from django.core.paginator import Paginator
+from extra_views import CreateWithInlinesView, UpdateWithInlinesView, ModelFormSetView, FormSetView
+from extra_views.advanced import InlineFormSetFactory
+from extra_views.formsets import InlineFormSetView
 from .models import AdvUser, Exercise, SetDescription, Workout
-from .forms import ExerciseFormSet, SearchForm, ChangeUserInfoForm, RegisterUserForm, WorkoutForm
+from .forms import SearchForm, ChangeUserInfoForm, RegisterUserForm, SetDescriptionFormInline, WorkoutForm
 from .utilities import signer
-
+from django.forms.formsets import BaseFormSet
 
 def index(request):
     """Main page"""
@@ -152,8 +157,8 @@ def workout(request, pk):
 
 
 @login_required
-def workout_delete(request, pk):
-    workout = get_object_or_404(Workout, pk=pk)
+def workout_delete(request, workout_pk):
+    workout = get_object_or_404(Workout, pk=workout_pk)
     if request.method == "POST":
         workout.delete()
         messages.add_message(request, messages.SUCCESS, 'Тренировка удалена')
@@ -163,38 +168,38 @@ def workout_delete(request, pk):
         return render(request, 'main/workout_delete.html', context)
 
 
-class WorkoutList(ListView):
-    model = Workout
 
+class ExerciseInline(InlineFormSetFactory):
+    model = Exercise
+    fields = ['name']
+    factory_kwargs = {'extra': 6}
 
-class WorkoutAdd(LoginRequiredMixin, CreateView):
+class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
     model = Workout
+    inlines = [ExerciseInline]
+    fields = ('name', 'created_at', 'comment')
+    
+    success_message = "Тренировка  была успешно добавлена"
     template_name = 'main/workout_add.html'
-    fields = ('__all__')
 
-    def get_context_data(self, **kwargs):
-        context = super(WorkoutAdd, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['exercises'] = ExerciseFormSet(self.request.POST,
-                                                   instance=self.object)
-        else:
-            context['exercises'] = ExerciseFormSet(instance=self.object)
-        return context
-
-    def form_valid(self, form):
-        context = self.get_context_data(form=form)
-        formset = context['exercises']
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
-        return super(WorkoutAdd, self).form_valid(form)
+    def get_success_url(self):
+        return reverse_lazy('main:workouts')
 
     def get_form_kwargs(self):
-        kwargs = super(WorkoutAdd, self).get_form_kwargs()
+        kwargs = super(CreateWorkoutView, self).get_form_kwargs()
         if kwargs['instance'] is None:
             kwargs['instance'] = Workout()
         kwargs['instance'].sportsman_name = self.request.user
         return kwargs
+
+
+class CreateSetDescriptions(CreateWithInlinesView, FormSetView):
+    model = Exercise
+    inlines = [SetDescriptionFormInline]
+    fields = ('__all__')
+    template_name = 'main/set_add.html'
+    
+
 
     def get_success_url(self):
         return reverse_lazy('main:workouts')

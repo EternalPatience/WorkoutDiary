@@ -3,10 +3,11 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django.db.models import fields
 from django.forms.models import ModelForm, inlineformset_factory
+from extra_views.advanced import InlineFormSetFactory
 
 from .apps import user_registered
 
-from .models import AdvUser, Exercise, Workout
+from .models import AdvUser, Exercise, SetDescription, Workout
 
 
 class ChangeUserInfoForm(forms.ModelForm):
@@ -66,13 +67,17 @@ class RegisterUserForm(forms.ModelForm):
 
 # Probably need to be changed
 
-class WorkoutForm(ModelForm):
+class WorkoutForm(forms.ModelForm):
     class Meta:
         model = Workout
         exclude = ('sportsman_name',)
 
 
-ExerciseFormSet = inlineformset_factory(Workout, Exercise, extra=6, can_delete=True, exclude=('sportsman_name',))
+class SetDescriptionFormInline(InlineFormSetFactory):
+    model = SetDescription
+    fields = ('__all__')
+    factory_kwargs = {'extra': 5}
+    
 
 
 class SearchForm(forms.Form):
