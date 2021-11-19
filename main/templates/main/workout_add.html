@@ -1,0 +1,23 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block title %}Добавить тренировку{% endblock title %}
+
+{% block content %}
+<h2>Добавление тренировки</h2>    
+ 
+<div class="col-md-4">
+<table>
+   <form method="post">
+  {% csrf_token %}
+  {{ form }}
+
+  {% for formset in inlines %}
+    {{ formset }}
+  {% endfor %}
+  
+  <input type="submit" value="Submit" />
+</form>
+</table>
+{% endblock content %}    
+

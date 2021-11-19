@@ -1,0 +1,13 @@
+{% extends 'layout/basic.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}Удаление тренировки{% endblock title %}
+
+{% block content %}
+    <form method='post'>
+    {% csrf_token %}
+        <h2>Вы уверены, что хотите удалить упражнение {{ exercise.name }} из тренировки {{ exercise.workout }}?</h2>
+        {% buttons submit='Удалить тренировку' %}{% endbuttons %}  
+    </form>
+{% endblock content %}

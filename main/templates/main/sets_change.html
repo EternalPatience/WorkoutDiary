@@ -1,0 +1,25 @@
+{% extends 'layout/basic.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block title %}Добавить подходы{% endblock title %}
+
+{% block content %}
+<h2>Добавление подходов</h2>    
+ 
+<div class="table">
+
+
+   <form method="post">
+  {% csrf_token %}
+  {{ form }}
+
+  {% for formset in inlines %}
+    {{ formset }}
+  {% endfor %}
+  
+  <input type="submit" value="Submit" />
+</form>
+
+</div>
+{% endblock content %}    
+

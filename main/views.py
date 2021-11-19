@@ -1,4 +1,5 @@
 from django import template
+from django.db.models.query import QuerySet
 from django.forms.models import inlineformset_factory
 from django import forms
 from django.http.response import Http404, HttpResponse
@@ -11,6 +12,8 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, fields
+from django.db import transaction
+from django.urls.base import reverse
 from django.views.generic.edit import DeleteView, UpdateView, CreateView, DeleteView, FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
@@ -22,9 +25,10 @@ from extra_views import CreateWithInlinesView, UpdateWithInlinesView, ModelFormS
 from extra_views.advanced import InlineFormSetFactory
 from extra_views.formsets import InlineFormSetView
 from .models import AdvUser, Exercise, SetDescription, Workout
-from .forms import SearchForm, ChangeUserInfoForm, RegisterUserForm, SetDescriptionFormInline, WorkoutForm
+from .forms import SearchForm, ChangeUserInfoForm, RegisterUserForm, SetDescriptionForm, SetDescriptionFormInline, WorkoutForm, ExerciseInline, SetDescriptionFormSet
 from .utilities import signer
 from django.forms.formsets import BaseFormSet
+
 
 def index(request):
     """Main page"""
@@ -168,17 +172,10 @@ def workout_delete(request, workout_pk):
         return render(request, 'main/workout_delete.html', context)
 
 
-
-class ExerciseInline(InlineFormSetFactory):
-    model = Exercise
-    fields = ['name']
-    factory_kwargs = {'extra': 6}
-
 class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
     model = Workout
     inlines = [ExerciseInline]
     fields = ('name', 'created_at', 'comment')
-    
     success_message = "Тренировка  была успешно добавлена"
     template_name = 'main/workout_add.html'
 
@@ -193,13 +190,70 @@ class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
         return kwargs
 
 
-class CreateSetDescriptions(CreateWithInlinesView, FormSetView):
+class CreateSetDescription(CreateView):
     model = Exercise
-    inlines = [SetDescriptionFormInline]
     fields = ('__all__')
-    template_name = 'main/set_add.html'
+    success_url = reverse_lazy('main:workouts')
     
 
+    def get_context_data(self, **kwargs):
+        data = super(CreateSetDescription, self).get_context_data(**kwargs)
+        
+        if self.request.POST:
+            data['setdescriptions'] = SetDescriptionFormSet(self.request.POST)
+        else:
+            data['setdescriptions'] = SetDescriptionFormSet()
+        return data
 
-    def get_success_url(self):
-        return reverse_lazy('main:workouts')
+    def form_valid(self, form):
+        context = self.get_context_data()
+        setdescriptions = context['setdescriptions']
+        with transaction.atomic():
+            self.object = form.save()
+            if setdescriptions.is_valid():
+                setdescriptions.instance = self.object
+                setdescriptions.save()
+        return super(CreateSetDescription, self).form_valid(form)
+    
+    
+    def get_initial(self):
+        
+        return {
+            'workout': self.kwargs['workout_pk'],
+            }
+
+
+class SetDescriptionUpdate(UpdateView):
+    model = SetDescription
+    form_class = SetDescriptionFormSet
+    template = 'main/sets_change.html'
+
+    def get(self, request, **kwargs):
+        self.object = Exercise.objects.get(id=self.kwargs.get('exercise_id'))
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        context = self.get_context_data(object=self.object, form=form)
+        return self.render_to_response(context)
+
+    def get_object(self, queryset=None):
+        if not queryset:
+            queryset = self.get_queryset()
+        obj = Exercise.objects.get(id=self.kwargs.get('exercise_id'))
+        return obj   
+
+
+
+    
+
+    
+
+@login_required
+def exercise_delete(request, workout_pk, exercise_id):
+    exercise = get_object_or_404(Exercise, workout_id=workout_pk, id=exercise_id)
+    if request.method == "POST":
+        exercise.delete()
+        messages.add_message(request, messages.SUCCESS, 'Упражнение удалено')
+        return redirect('main:workouts')
+    else:
+        context = {'exercise': exercise}
+        return render(request, 'main/set_delete.html', context)

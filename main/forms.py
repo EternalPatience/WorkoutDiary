@@ -1,3 +1,4 @@
+from typing import Set
 from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
@@ -77,9 +78,21 @@ class SetDescriptionFormInline(InlineFormSetFactory):
     model = SetDescription
     fields = ('__all__')
     factory_kwargs = {'extra': 5}
+
+class SetDescriptionForm(forms.ModelForm):
+    class Meta:
+        model = SetDescription
+        fields = ('__all__')
+
+
+SetDescriptionFormSet = inlineformset_factory(Exercise, SetDescription, form=SetDescriptionForm, extra=5)
+
+class ExerciseInline(InlineFormSetFactory):
+    model = Exercise
+    fields = ['name']
+    factory_kwargs = {'extra': 6, 'can_delete': False}
+
     
-
-
 class SearchForm(forms.Form):
     keyword = forms.CharField(required=False,
                               max_length=20,
