@@ -49,7 +49,7 @@ class Exercise(models.Model):
                                 on_delete=models.CASCADE,
                                 verbose_name="Тренировка",
                                 )
-    name = models.CharField(max_length=150, verbose_name='Упражнение', db_index=True, editable=True)
+    name = models.CharField(max_length=150, verbose_name='', db_index=True, editable=True)
 
     class Meta:
         verbose_name = "Упражнение"
@@ -75,5 +75,4 @@ class SetDescription(models.Model):
         return ('Подход № ' + str(self.number) +" " + str(self.exercise))
 
     
-    def get_absolute_url(self):
-        return f"/workouts/{self.slug}/"
+  

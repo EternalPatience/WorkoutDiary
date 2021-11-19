@@ -2,16 +2,20 @@
 {% load bootstrap4 %}
 
 {% block content %}
-<h2>Последние 10 Ваших тренировок</h2>
-{% for workout in workouts %}
-    <li class="media my-5 p-3 border">
-        <div class="media-body">
-            <h3><a href="#"> <!---ссылка на саму тренировку с упражнениями-->
-            {{ workout.name }}</a></h3>
-            <div>{{ workout.comment }}</div>
-            <p class="text-right font-italic">{{ workout.created_at }}</p>
-        </div>
-    </li>    
-{% endfor %}
+<h2>Последние 10 Ваших тренировок:</h2>
+    {% if workouts %}
+        {% for workout in workouts %}
+        <ul class='list-unstyled'>
+            <li class="media-body">
+                <div class="card-header">
+                    <h3><a href="{% url 'main:workout' pk=workout.pk %}">
+                    {{ workout.name }}</a></h3>
+                    <div>{{ workout.comment }}</div>
+                    <p class="text-right font-italic">{{ workout.created_at }}</p>
+                </div>
+            </li> 
+        </ul>
+        {% endfor %}
+    {% endif%}     
 {% endblock content %}
 

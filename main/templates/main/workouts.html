@@ -14,12 +14,13 @@
         </form>
     </div>
 </div>
+<ul>
 <h2>Мои тренировки:</h2>
 {% if workouts %}
     {% for workout in workouts %}
     <ul class='list-unstyled'>
-        <li class="media my-5 p-3 border">
-            <div class="media-body">
+        <li class="media-body">
+            <div class="card-header">
                 <h3><a href="{% url 'main:workout' pk=workout.pk %}">
                 {{ workout.name }}</a></h3>
                 <div>{{ workout.comment }}</div>
@@ -30,6 +31,7 @@
     {% endfor %}
 {% else %}       
 <p>Вы еще не добавили тренировки</p>
+</ul>
 {% endif %}
 
 {% bootstrap_pagination page url=keyword %}

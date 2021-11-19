@@ -5,7 +5,8 @@
 {% block content %}
  <div class="col-md-4">
         <form action="" method="post">{% csrf_token %}
-            {{ form.as_p }}
+        {% bootstrap_form form%}
+            {{ form }}
 
             <table class="table">
                 {{ setdescriptions.management_form }}
@@ -23,7 +24,7 @@
                     <tr class="{% cycle row1 row2 %} formset_row">
                         {% for field in form.visible_fields %}
                             <td>
-                                {# Include the hidden fields in the form #}
+                                
                                 {% if forloop.first %}
                                     {% for hidden in form.hidden_fields %}
                                         {{ hidden }}
@@ -36,7 +37,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            <input type="submit" value="Save"/> <a href="">back to the list</a>
+            <input type="submit" value="Сохранить"/> <a href="{% url 'main:workouts' %}">Вернуться</a>
         </form>
     </div>
        

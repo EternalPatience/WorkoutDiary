@@ -15,20 +15,29 @@
 </div>
     {% for exercise in exercises %}
         <div class="mb-auto">
-            <h5><a href="{% url 'main:sets_change' workout_pk=workout.pk exercise_id=exercise.id %}">{{ exercise.name }}</a></h5>
-            <p class="text-right font-weight-bold"></p>
-            <p class="text-right font-italic"></p>
-            <p class="text-right mt-2">
-            <a href="{% url 'main:set_delete' workout_pk=workout.pk exercise_id=exercise.id %}">Удалить упражнение</a></p>
-            <div class='table'>
-                <nav class="col-md-auto nav flex-column border">
-                    {% for set in exercise.setdescription_set.all %}
-                        {{ set.number }}
-                        {{ set.weight }}
-                        {{ set.repeats }}
-                    {% endfor %}
-                </nav>
-            </div>
+            <div class="jumbotron">
+                <h5><a href="{% url 'main:sets_change' workout_pk=workout.pk exercise_id=exercise.id %}">{{ exercise.name }}</a></h5>
+                <p class="text-right font-weight-bold"></p>
+                <p class="text-right font-italic"></p>
+                <p class="text-right mt-2">
+                <a href="{% url 'main:set_delete' workout_pk=workout.pk exercise_id=exercise.id %}">Удалить упражнение</a></p>
+                <div class='media-body'>
+                    <nav class="col-md-auto nav flex-column border">
+                        
+                        <table>
+                        {% for set in exercise.setdescription_set.all %}
+                            <td>
+                               <p>Подход № {{ set.number }}</p>
+                               <p> {{ set.weight }} кг.</p>
+                               <p> {{ set.repeats }} повторов</p>
+                            </td>
+                        {% endfor %}
+                        </table>    
+                        
+                    
+                    </nav>
+                </div>
+            </div>  
         </div>
     </li>   
     {% endfor %}

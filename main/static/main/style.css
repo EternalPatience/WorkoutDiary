@@ -1,3 +1,8 @@
 .root {
     font-size: larger;
 }
+
+.page-header h1 {
+    background: url("bg.webp") left / auto 150% no-repeat;
+    background-color: rgb(212, 212, 212);
+}

@@ -15,7 +15,7 @@ urlpatterns = [
     path('workouts/', all_workouts, name='workouts'),
     path('workouts/<int:pk>/', workout, name='workout'),
     path('workouts/<int:workout_pk>/delete/', workout_delete, name='workout_delete'),
-    path('workouts/<int:workout_pk>/<int:exercise_id>/change', SetDescriptionUpdate.as_view(), name='sets_change'),
+    path('workouts/<int:workout_pk>/<int:exercise_id>/', SetDescriptionUpdate.as_view(), name='sets_change'),
     path('workouts/<int:workout_pk>/exercise_add/', CreateSetDescription.as_view(), name='set_add'),
     path('workouts/<int:workout_pk>/<int:exercise_id>/delete/', exercise_delete, name='set_delete'),
     path('accounts/profile/delete/',

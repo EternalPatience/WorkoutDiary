@@ -32,7 +32,9 @@ from django.forms.formsets import BaseFormSet
 
 def index(request):
     """Main page"""
-    return render(request, 'main/index.html')
+    workouts = Workout.objects.filter(
+        sportsman_name=request.user).order_by('-created_at')
+    return render(request, 'main/index.html', {'workouts': workouts})
 
 
 def about(request, page):
@@ -194,11 +196,9 @@ class CreateSetDescription(CreateView):
     model = Exercise
     fields = ('__all__')
     success_url = reverse_lazy('main:workouts')
-    
 
     def get_context_data(self, **kwargs):
         data = super(CreateSetDescription, self).get_context_data(**kwargs)
-        
         if self.request.POST:
             data['setdescriptions'] = SetDescriptionFormSet(self.request.POST)
         else:
@@ -214,19 +214,17 @@ class CreateSetDescription(CreateView):
                 setdescriptions.instance = self.object
                 setdescriptions.save()
         return super(CreateSetDescription, self).form_valid(form)
-    
-    
+
     def get_initial(self):
-        
         return {
             'workout': self.kwargs['workout_pk'],
-            }
+        }
 
 
 class SetDescriptionUpdate(UpdateView):
     model = SetDescription
     form_class = SetDescriptionFormSet
-    template = 'main/sets_change.html'
+    
 
     def get(self, request, **kwargs):
         self.object = Exercise.objects.get(id=self.kwargs.get('exercise_id'))
@@ -239,17 +237,17 @@ class SetDescriptionUpdate(UpdateView):
         if not queryset:
             queryset = self.get_queryset()
         obj = Exercise.objects.get(id=self.kwargs.get('exercise_id'))
-        return obj   
+        return obj
 
+    def get_success_url(self):
+        return reverse('main:workouts')
 
-
-    
-
-    
 
 @login_required
 def exercise_delete(request, workout_pk, exercise_id):
-    exercise = get_object_or_404(Exercise, workout_id=workout_pk, id=exercise_id)
+    exercise = get_object_or_404(Exercise,
+                                 workout_id=workout_pk,
+                                 id=exercise_id)
     if request.method == "POST":
         exercise.delete()
         messages.add_message(request, messages.SUCCESS, 'Упражнение удалено')

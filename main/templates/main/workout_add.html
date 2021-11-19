@@ -6,18 +6,24 @@
 {% block content %}
 <h2>Добавление тренировки</h2>    
  
-<div class="col-md-4">
-<table>
-   <form method="post">
-  {% csrf_token %}
-  {{ form }}
+<div class="form-form-check-label">
 
-  {% for formset in inlines %}
-    {{ formset }}
-  {% endfor %}
+<form method="post" class='form-check'>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+      {% for formset in inlines %}
+        <h3>Упражнения</h3>
+        <div class='table-bordered'>
+          
+          {{ formset }}
+        </div>
+        
+      {% endfor %}
+
+  <p></p>    
+  {% buttons submit='Добавить тренировку' %}{% endbuttons %}  
   
-  <input type="submit" value="Submit" />
 </form>
-</table>
+
 {% endblock content %}    
 
