@@ -1,0 +1,6 @@
+__pycache__/
+*.sqlite3
+diary_env/
+*.__pyc
+workout.data
+*.pyc

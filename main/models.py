@@ -27,7 +27,7 @@ class Workout(models.Model):
     sportsman_name = models.CharField(max_length=50, verbose_name='Имя спортсмена')
     
     name = models.CharField(max_length=150, verbose_name='Название')
-    created_at = models.DateTimeField(auto_now=False,
+    created_at = models.DateField(auto_now=False,
                                       verbose_name='Дата тренировки',
                                       db_index=True,
                                       editable=True)
@@ -61,7 +61,7 @@ class Exercise(models.Model):
 
 class SetDescription(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name="Упражнение")
-    number = models.PositiveSmallIntegerField(verbose_name='№ подхода')
+    number = models.PositiveSmallIntegerField(db_index=True, verbose_name='№ подхода')
     weight = models.FloatField(verbose_name='Вес')
     repeats = models.PositiveSmallIntegerField(default=0,
                                                verbose_name='Повторения')

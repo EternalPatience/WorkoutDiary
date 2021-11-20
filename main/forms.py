@@ -1,9 +1,7 @@
-from typing import Set
 from django import forms
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
-from django.db.models import fields
-from django.forms.models import ModelForm, inlineformset_factory
+from django.forms.models import inlineformset_factory
 from extra_views.advanced import InlineFormSetFactory
 
 from .apps import user_registered
@@ -68,16 +66,24 @@ class RegisterUserForm(forms.ModelForm):
 
 # Probably need to be changed
 
+
+class DateTimeInput(forms.DateTimeInput):
+    input_type = 'date'
+
+
 class WorkoutForm(forms.ModelForm):
     class Meta:
         model = Workout
-        exclude = ('sportsman_name',)
+        exclude = ('sportsman_name', )
+        widgets = {'created_at': DateTimeInput()}
 
 
 class SetDescriptionFormInline(InlineFormSetFactory):
     model = SetDescription
     fields = ('__all__')
+
     factory_kwargs = {'extra': 5}
+
 
 class SetDescriptionForm(forms.ModelForm):
     class Meta:
@@ -85,14 +91,18 @@ class SetDescriptionForm(forms.ModelForm):
         fields = ('__all__')
 
 
-SetDescriptionFormSet = inlineformset_factory(Exercise, SetDescription, form=SetDescriptionForm, extra=5)
+SetDescriptionFormSet = inlineformset_factory(Exercise,
+                                              SetDescription,
+                                              form=SetDescriptionForm,
+                                              extra=5)
+
 
 class ExerciseInline(InlineFormSetFactory):
     model = Exercise
     fields = ['name']
     factory_kwargs = {'extra': 6, 'can_delete': False}
 
-    
+
 class SearchForm(forms.Form):
     keyword = forms.CharField(required=False,
                               max_length=20,

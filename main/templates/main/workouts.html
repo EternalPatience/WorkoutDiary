@@ -14,7 +14,7 @@
         </form>
     </div>
 </div>
-<ul>
+
 <h2>Мои тренировки:</h2>
 {% if workouts %}
     {% for workout in workouts %}
@@ -31,7 +31,7 @@
     {% endfor %}
 {% else %}       
 <p>Вы еще не добавили тренировки</p>
-</ul>
+
 {% endif %}
 
 {% bootstrap_pagination page url=keyword %}

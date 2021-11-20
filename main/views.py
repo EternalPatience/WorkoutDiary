@@ -176,10 +176,12 @@ def workout_delete(request, workout_pk):
 
 class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
     model = Workout
+    form_class = WorkoutForm
     inlines = [ExerciseInline]
-    fields = ('name', 'created_at', 'comment')
     success_message = "Тренировка  была успешно добавлена"
     template_name = 'main/workout_add.html'
+    
+
 
     def get_success_url(self):
         return reverse_lazy('main:workouts')
@@ -240,7 +242,7 @@ class SetDescriptionUpdate(UpdateView):
         return obj
 
     def get_success_url(self):
-        return reverse('main:workouts')
+        return reverse_lazy('main:workouts')
 
 
 @login_required
