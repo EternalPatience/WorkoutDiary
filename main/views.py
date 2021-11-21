@@ -154,6 +154,7 @@ def all_workouts(request):
     return render(request, 'main/workouts.html', context)
 
 
+@login_required
 def workout(request, pk):
     workout = get_object_or_404(Workout, pk=pk)
     exercises = Exercise.objects.filter(workout=workout)
@@ -174,14 +175,13 @@ def workout_delete(request, workout_pk):
         return render(request, 'main/workout_delete.html', context)
 
 
-class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
+
+class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin, LoginRequiredMixin ):
     model = Workout
     form_class = WorkoutForm
     inlines = [ExerciseInline]
     success_message = "Тренировка  была успешно добавлена"
     template_name = 'main/workout_add.html'
-    
-
 
     def get_success_url(self):
         return reverse_lazy('main:workouts')
@@ -194,7 +194,8 @@ class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin):
         return kwargs
 
 
-class CreateSetDescription(CreateView):
+
+class CreateSetDescription(CreateView, LoginRequiredMixin):
     model = Exercise
     fields = ('__all__')
     success_url = reverse_lazy('main:workouts')
@@ -223,10 +224,9 @@ class CreateSetDescription(CreateView):
         }
 
 
-class SetDescriptionUpdate(UpdateView):
+class SetDescriptionUpdate(UpdateView, LoginRequiredMixin):
     model = SetDescription
     form_class = SetDescriptionFormSet
-    
 
     def get(self, request, **kwargs):
         self.object = Exercise.objects.get(id=self.kwargs.get('exercise_id'))

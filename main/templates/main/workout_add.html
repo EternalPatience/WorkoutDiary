@@ -5,26 +5,27 @@
 
 {% block content %}
 <h2>Добавление тренировки</h2>    
- 
-<div class="form-form-check-label">
+{% if user.is_authenticated %}
 
-<form method="post" class='form-check'>
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    
-      {% for formset in inlines %}
-        <h3>Упражнения</h3>
-        <div class='table-bordered'>
-        
-          {{ formset.as_p }}
-        </div>
-        
-      {% endfor %}
+  <form method="post" class='form-check'>
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      
+        {% for formset in inlines %}
+          <h3>Упражнения</h3>
+          <div class='table-bordered'>
+          
+            {{ formset.as_p }}
+          </div>
+          
+        {% endfor %}
 
-  <p></p>    
-  {% buttons submit='Добавить тренировку' %}{% endbuttons %}  
-</form>
-
+    <p></p>    
+    {% buttons submit='Добавить тренировку' %}{% endbuttons %}  
+  </form>
+{% else %}
+<p>Выполните вход на сайт, прежде чем добавлять тренировки</p>
+{% endif %}
 
 {% endblock content %}    
 
