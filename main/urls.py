@@ -3,21 +3,44 @@ from django.forms.formsets import all_valid
 from django.urls import path
 from django.views.generic.edit import CreateView, DeleteView
 
-from .views import (DeleteUserView, SetDescriptionUpdate, UserLogoutView, all_workouts, profile,
-                    index, about, UserLoginView, ChangeUserInfoView,
-                    UserPasswordChangeView, RegisterUserView, RegisterDoneView,
-                    user_activate, workout, workout_delete, CreateWorkoutView,
-                    CreateSetDescription, exercise_delete,)
+from .views import (
+    DeleteUserView,
+    SetDescriptionUpdate,
+    UserLogoutView,
+    all_workouts,
+    profile,
+    index,
+    about,
+    UserLoginView,
+    ChangeUserInfoView,
+    UserPasswordChangeView,
+    RegisterUserView,
+    RegisterDoneView,
+    user_activate,
+    workout,
+    workout_delete,
+    CreateWorkoutView,
+    CreateSetDescription,
+    exercise_delete,
+)
 
 app_name = 'main'
 urlpatterns = [
     path('workout_add/', CreateWorkoutView.as_view(), name='workout_add'),
     path('workouts/', all_workouts, name='workouts'),
     path('workouts/<int:pk>/', workout, name='workout'),
-    path('workouts/<int:workout_pk>/delete/', workout_delete, name='workout_delete'),
-    path('workouts/<int:workout_pk>/<int:exercise_id>/', SetDescriptionUpdate.as_view(), name='sets_change'),
-    path('workouts/<int:workout_pk>/exercise_add/', CreateSetDescription.as_view(), name='set_add'),
-    path('workouts/<int:workout_pk>/<int:exercise_id>/delete/', exercise_delete, name='set_delete'),
+    path('workouts/<int:workout_pk>/delete/',
+         workout_delete,
+         name='workout_delete'),
+    path('workouts/<int:workout_pk>/<int:exercise_id>/',
+         SetDescriptionUpdate.as_view(),
+         name='sets_change'),
+    path('workouts/<int:workout_pk>/exercise_add/',
+         CreateSetDescription.as_view(),
+         name='set_add'),
+    path('workouts/<int:workout_pk>/<int:exercise_id>/delete/',
+         exercise_delete,
+         name='set_delete'),
     path('accounts/profile/delete/',
          DeleteUserView.as_view(),
          name='profile_delete'),

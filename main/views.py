@@ -175,8 +175,8 @@ def workout_delete(request, workout_pk):
         return render(request, 'main/workout_delete.html', context)
 
 
-
-class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin, LoginRequiredMixin ):
+class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin,
+                        LoginRequiredMixin):
     model = Workout
     form_class = WorkoutForm
     inlines = [ExerciseInline]
@@ -192,7 +192,6 @@ class CreateWorkoutView(CreateWithInlinesView, SuccessMessageMixin, LoginRequire
             kwargs['instance'] = Workout()
         kwargs['instance'].sportsman_name = self.request.user
         return kwargs
-
 
 
 class CreateSetDescription(CreateView, LoginRequiredMixin):

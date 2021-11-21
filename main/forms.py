@@ -81,7 +81,6 @@ class WorkoutForm(forms.ModelForm):
 class SetDescriptionFormInline(InlineFormSetFactory):
     model = SetDescription
     fields = ('__all__')
-
     factory_kwargs = {'extra': 5}
 
 

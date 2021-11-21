@@ -11,12 +11,10 @@ class AdvUser(AbstractUser):
     send_messages = models.BooleanField(
         default=True, verbose_name='Слать оповещения о новых комментариях?')
 
-
     def delete(self, *args, **kwargs):
         for workout in self.workout_set.all():
             workout.delete()
         super().delete(*args, **kwargs)
-
 
     class Meta(AbstractUser.Meta):
         pass
@@ -24,13 +22,14 @@ class AdvUser(AbstractUser):
 
 class Workout(models.Model):
     """"Workout description"""
-    sportsman_name = models.CharField(max_length=50, verbose_name='Имя спортсмена')
-    
+    sportsman_name = models.CharField(max_length=50,
+                                      verbose_name='Имя спортсмена')
+
     name = models.CharField(max_length=150, verbose_name='Название')
     created_at = models.DateField(auto_now=False,
-                                      verbose_name='Дата тренировки',
-                                      db_index=True,
-                                      editable=True)
+                                  verbose_name='Дата тренировки',
+                                  db_index=True,
+                                  editable=True)
     comment = models.TextField(null=True,
                                blank=True,
                                verbose_name='Комментарий')
@@ -45,11 +44,15 @@ class Workout(models.Model):
 
 class Exercise(models.Model):
     """Exercise model that is connected to workout model"""
-    workout = models.ForeignKey(Workout,
-                                on_delete=models.CASCADE,
-                                verbose_name="Тренировка",
-                                )
-    name = models.CharField(max_length=150, verbose_name='', db_index=True, editable=True)
+    workout = models.ForeignKey(
+        Workout,
+        on_delete=models.CASCADE,
+        verbose_name="Тренировка",
+    )
+    name = models.CharField(max_length=150,
+                            verbose_name='',
+                            db_index=True,
+                            editable=True)
 
     class Meta:
         verbose_name = "Упражнение"
@@ -60,8 +63,11 @@ class Exercise(models.Model):
 
 
 class SetDescription(models.Model):
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, verbose_name="Упражнение")
-    number = models.PositiveSmallIntegerField(db_index=True, verbose_name='№ подхода')
+    exercise = models.ForeignKey(Exercise,
+                                 on_delete=models.CASCADE,
+                                 verbose_name="Упражнение")
+    number = models.PositiveSmallIntegerField(db_index=True,
+                                              verbose_name='№ подхода')
     weight = models.FloatField(verbose_name='Вес')
     repeats = models.PositiveSmallIntegerField(default=0,
                                                verbose_name='Повторения')
@@ -72,7 +78,4 @@ class SetDescription(models.Model):
         ordering = ['number']
 
     def __str__(self):
-        return ('Подход № ' + str(self.number) +" " + str(self.exercise))
-
-    
-  
+        return ('Подход № ' + str(self.number) + " " + str(self.exercise))
