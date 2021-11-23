@@ -10,10 +10,9 @@ from .serializers import SetDescriptionSerializer, WorkoutSerializer, WorkoutDet
 
 @api_view(['GET'])
 def workouts(request):
-    if request.method == 'GET':
-        workouts = Workout.objects.all()
-        serializer = WorkoutSerializer(workouts, many=True)
-        return Response(serializer.data)
+    workouts = Workout.objects.all()
+    serializer = WorkoutSerializer(workouts, many=True)
+    return Response(serializer.data)
 
 
 class WorkoutDetailView(RetrieveAPIView):
@@ -23,7 +22,6 @@ class WorkoutDetailView(RetrieveAPIView):
 
 @api_view(['GET'])
 def setdescription(request, workout_pk, exercise_id):
-    if request.method == 'GET':
-        sets = SetDescription.objects.filter(id=exercise_id)
-        serializer = SetDescriptionSerializer(sets, many=True)
-        return Response(serializer.data)
+    sets = SetDescription.objects.filter(id=exercise_id)
+    serializer = SetDescriptionSerializer(sets, many=True)
+    return Response(serializer.data)

@@ -6,7 +6,6 @@ from django.contrib.auth.models import AbstractUser
 
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True,
-                                       db_index=True,
                                        verbose_name='Прошел активацию?')
     send_messages = models.BooleanField(
         default=True, verbose_name='Слать оповещения о новых комментариях?')
@@ -68,7 +67,7 @@ class SetDescription(models.Model):
                                  verbose_name="Упражнение")
     number = models.PositiveSmallIntegerField(db_index=True,
                                               verbose_name='№ подхода')
-    weight = models.FloatField(verbose_name='Вес')
+    weight = models.DecimalField(max_digits=3, decimal_places=1,verbose_name='Вес')
     repeats = models.PositiveSmallIntegerField(default=0,
                                                verbose_name='Повторения')
 
